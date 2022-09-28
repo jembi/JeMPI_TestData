@@ -1,6 +1,6 @@
 *
 !.gitignore
-!lookup-files
+!lookup-files/*.csv
 !*.py
 !*.json
 !*.sh
