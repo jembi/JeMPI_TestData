@@ -1,0 +1,165 @@
+{
+  "max_duplicate_per_record": 10,
+  "num_duplicates_distribution": "zipf",
+  "max_modification_per_attr": 1,
+  "num_modification_per_record": 2,
+  "name_gender_freq_csv_file": "lookup-files/given-name-gender-freq-1.csv",
+  "corruptor": {
+    "edit1": {
+      "position_function": "position_mod_normal",
+      "char_set_funct": "char_set_ascii",
+      "insert_prob": 0.5,
+      "delete_prob": 0.5,
+      "substitute_prob": 0.0,
+      "transpose_prob": 0.0
+    },
+    "edit2": {
+      "position_function": "position_mod_uniform",
+      "char_set_funct": "char_set_ascii",
+      "insert_prob": 0.25,
+      "delete_prob": 0.25,
+      "substitute_prob": 0.25,
+      "transpose_prob": 0.25
+    },
+    "given_name_misspell": {
+      "lookup_file_name": "lookup-files/given-name-misspell.csv"
+    },
+    "family_name_misspell": {
+      "lookup_file_name": "lookup-files/family-name-misspell.csv"
+    }
+
+  },
+  "attribute": [
+    {
+      "name": "Given_Name",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Family_Name",
+      "corruption_prob": 0.00,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Gender_at_Birth",
+      "corruption_prob": 0.30,
+      "corruptor_prob": {
+        "missing_val": 0.4,
+        "name_misspell": 0.0,
+        "edit1": 0.2,
+        "edit2": 0.2,
+        "ocr": 0.0,
+        "keyboard": 0.2,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Date_of_Birth",
+      "corruption_prob": 0.30,
+      "corruptor_prob": {
+        "missing_val": 0.4,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.2,
+        "keyboard": 0.4,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "City",
+      "corruption_prob": 0.40,
+      "corruptor_prob": {
+        "missing_val": 0.3,
+        "name_misspell": 0.0,
+        "edit1": 0.1,
+        "edit2": 0.1,
+        "ocr": 0.0,
+        "keyboard": 0.3,
+        "phonetic": 0.2
+      }
+    },
+    {
+      "name": "Phone_Number",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "National_ID",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Dummy1",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Dummy2",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    },
+    {
+      "name": "Dummy3",
+      "corruption_prob": 0.0,
+      "corruptor_prob": {
+        "missing_val": 1.0,
+        "name_misspell": 0.0,
+        "edit1": 0.0,
+        "edit2": 0.0,
+        "ocr": 0.0,
+        "keyboard": 0.0,
+        "phonetic": 0.0
+      }
+    }
+
+  ]
+}

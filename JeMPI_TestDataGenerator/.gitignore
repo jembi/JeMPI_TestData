@@ -1,0 +1,6 @@
+*
+!.gitignore
+!lookup-files
+!*.py
+!*.json
+!*.sh

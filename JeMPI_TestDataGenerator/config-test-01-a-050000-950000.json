@@ -1,0 +1,7 @@
+{
+  "file_name": "data-test-01-a-050000-950000-abcd.csv",
+  "num_org_rec": 50000,
+  "num_dup_rec": 950000,
+  "max_duplicate_per_record": 40,
+  "config2": "config-test-01-a.json"
+}
