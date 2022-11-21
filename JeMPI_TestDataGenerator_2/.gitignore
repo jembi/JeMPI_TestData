@@ -1,0 +1,7 @@
+*
+!.gitignore
+!lookup-files/*.csv
+!*.py
+!*.json
+!*.sh
+!*.md
