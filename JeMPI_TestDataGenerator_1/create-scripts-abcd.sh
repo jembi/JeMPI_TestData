@@ -15,7 +15,7 @@ set -u
 
 FILE=%s
 
-DST_DIR=../../../JeMPI/docker/docker_data/data-apps/test_01/csv
+DST_DIR=../../../JeMPI/docker/docker_data/async_receiver/csv
 
 pushd ../test-data
   rm -f \$DST_DIR/*.csv
