@@ -276,7 +276,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-Results
 .idea
 *.csv
 !metadata/*.csv
