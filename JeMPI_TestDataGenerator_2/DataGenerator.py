@@ -4,6 +4,7 @@ import os
 
 from Resources.ClinicalDataGenerator import MinimalClinicalDataGenerator
 from Resources.DemographicDataGenerator import PatientGenerator
+from Resources.CorruptorGenerator import Corruptors
 from Utilities import helper
 
 
@@ -18,11 +19,19 @@ def generate_dataset():
     town_region_generator = PatientGenerator.town_region_generator(seed, 'metadata/town-region-freq.csv')
     national_id_generator = PatientGenerator.national_id_generator(seed)
     clinical_data_generator = MinimalClinicalDataGenerator.clinical_data_generator(seed)
-    n = 2_000
+    all_upper_case_corruptor = Corruptors.all_upper_case_corruptor()
+    ocr_corruptor = Corruptors.ocr_corruptor()
+    missing_value_corruptor = Corruptors.missing_value_corruptor()
+
+    n = 10
     data = []
     next(national_id_generator)
     next(phone_number_generator)
     next(clinical_data_generator)
+    next(all_upper_case_corruptor)
+    next(missing_value_corruptor)
+    next(ocr_corruptor)
+
     k = 0
     for i in range(0, n):
         k = k+1
@@ -43,9 +52,30 @@ def generate_dataset():
             rec_num = "rec-%010d-%02d" % (i + 1, j)
             data.append([rec_num, given_name, fathers_name, fathers_father_name, gender, dob, town_region[1],
                         town_region[2], phone_number, national_id, clinical_data[j]])
+
     df = pd.DataFrame(data,columns=['rec_num', 'given_name', 'fathers_name', 'fathers_father_name', 'gender', 'dob' ,
                                     'region', 'sub_region', 'phone_number', 'national_id', 'clinical_data'])
+
+    # for required number of corrupted row
+    #   select the row
+    #   select the columnS to corrupt
+    #   for each column to corrupt
+    #     select corruptor and apply
+
+    df['gender'][1] = all_upper_case_corruptor.send(df['gender'][1])
+    df['gender'][3] = missing_value_corruptor.send(df['gender'][3])
+    df['given_name'][0] = ocr_corruptor.send(df['given_name'][0])
+    df['fathers_name'][0] = ocr_corruptor.send(df['fathers_name'][0])
+    df['fathers_father_name'][0] = ocr_corruptor.send(df['fathers_father_name'][0])
+    df['gender'][0] = ocr_corruptor.send(df['gender'][0])
+    df['dob'][0] = ocr_corruptor.send(df['dob'][0])
+    df['region'][0] = ocr_corruptor.send(df['region'][0])
+    df['sub_region'][0] = ocr_corruptor.send(df['sub_region'][0])
+    df['phone_number'][0] = ocr_corruptor.send(df['phone_number'][0])
+    df['national_id'][0] = ocr_corruptor.send(df['national_id'][0])
+
     df.to_csv('Results/'+ str(helper.generate_log_filename('synthetic_data_V')), index=False, encoding = 'utf-8')
+
 
 
 def main():
