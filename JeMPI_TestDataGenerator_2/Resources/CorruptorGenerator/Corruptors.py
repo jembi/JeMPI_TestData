@@ -77,8 +77,7 @@ def ocr_corruptor() -> Generator[None]:
 
     y = None
     while True:
-        meta = yield y
-        in_str = meta
+        in_str = yield y
 
         if len(in_str) == 0:  # Empty string, no modification possible
             y = in_str
