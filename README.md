@@ -6,7 +6,7 @@
 - linux 
   - bash
   - gzip
-  - shuf
+  - coreutils
   - sed
   - python3
     - numpy
