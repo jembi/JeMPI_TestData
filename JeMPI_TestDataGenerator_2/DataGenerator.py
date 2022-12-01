@@ -152,7 +152,7 @@ def generate_dataset():
         candidate_not_corrupted = False
         row_to_corrupt = None
         while not candidate_not_corrupted:
-            row_to_corrupt = random.randint(0, number_of_records - 1)
+            row_to_corrupt = rng.integers(0, number_of_records)
             already_corrupted = df.loc[row_to_corrupt]['corrupted']
             if not already_corrupted:
                 df.at[row_to_corrupt, 'corrupted'] = True
