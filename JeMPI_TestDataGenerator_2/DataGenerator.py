@@ -10,7 +10,6 @@ from Utilities import helper, basefunctions
 
 
 def generate_dataset():
-
     config = \
         {"BaseDate": "2022-01-01",
          "NumberOfPatients": 5,
@@ -108,8 +107,8 @@ def generate_dataset():
                       'edit2_corruptor': Corruptors.edit_corruptor(Corruptors.position_mod_uniform,
                                                                    basefunctions.char_set_ascii,
                                                                    0.25, 0.25, 0.25, 0.25),
-                      'phonetic_corruptor': Corruptors.phonetic_corruptor('metadata/phonetic-variations.csv', False,
-                                                                          'utf_8')}
+                      'phonetic_corruptor': Corruptors.phonetic_corruptor('metadata/phonetic-variations.csv',
+                                                                          False, 'utf_8')}
 
     number_of_patients = config.get("NumberOfPatients")
     data = []
