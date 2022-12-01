@@ -3,6 +3,35 @@ import random
 from collections.abc import Generator
 
 
+def position_mod_normal(in_str):
+    """Select any position in the given input string with normally distributed
+       likelihood where the average of the normal distribution is set to one
+       character behind the middle of the string, and the standard deviation is
+       set to 1/4 of the string length.
+
+       This is based on studies on the distribution of errors in real text which
+       showed that errors such as typographical mistakes are more likely to
+       appear towards the middle and end of a string but not at the beginning.
+
+       Return 0 is the string is empty.
+    """
+
+    if (in_str == ''):  # Empty input string
+        return 0
+
+    str_len = len(in_str)
+
+    mid_pos = str_len / 2.0 + 1
+    std_dev = str_len / 4.0
+    max_pos = str_len - 1
+
+    pos = int(round(random.gauss(mid_pos, std_dev)))
+    while ((pos < 0) or (pos > max_pos)):
+        pos = int(round(random.gauss(mid_pos, std_dev)))
+
+    return pos
+
+
 def all_upper_case_corruptor() -> Generator[None]:
     y = None
     while True:
@@ -122,4 +151,69 @@ def ocr_corruptor() -> Generator[None]:
             else:
                 try_num += 1
 
+        y = mod_str
+
+def keyboard_corruptor(row_prob,col_prob ) -> Generator[None]:
+    position_function = position_mod_normal
+
+    if (abs((row_prob + col_prob) - 1.0) > 0.0000001):
+        raise Exception('Sum of row and column probablities does not sum to 1.0')
+
+    #
+    rows = {'a': 's',  'b': 'vn', 'c': 'xv', 'd': 'sf', 'e': 'wr', 'f': 'dg',
+            'g': 'fh', 'h': 'gj', 'i': 'uo', 'j': 'hk', 'k': 'jl', 'l': 'k',
+            'm': 'n',  'n': 'bm', 'o': 'ip', 'p': 'o',  'q': 'w',  'r': 'et',
+            's': 'ad', 't': 'ry', 'u': 'yi', 'v': 'cb', 'w': 'qe', 'x': 'zc',
+            'y': 'tu', 'z': 'x',
+            '1': '2',  '2': '13', '3': '24', '4': '35', '5': '46', '6': '57',
+            '7': '68', '8': '79', '9': '80', '0': '9'}
+
+    cols = {'a': 'qzw', 'b': 'gh',  'c': 'df', 'd': 'erc', 'e': 'ds34',
+            'f': 'rvc', 'g': 'tbv', 'h': 'ybn', 'i': 'k89',  'j': 'umn',
+            'k': 'im', 'l': 'o', 'm': 'jk',  'n': 'hj',  'o': 'l90', 'p': '0',
+            'q': 'a12', 'r': 'f45', 's': 'wxz', 't': 'g56',  'u': 'j78',
+            'v': 'fg', 'w': 's23',  'x': 'sd', 'y': 'h67',  'z': 'as',
+            '1': 'q',  '2': 'qw', '3': 'we', '4': 'er', '5': 'rt',  '6': 'ty',
+            '7': 'yu', '8': 'ui', '9': 'io', '0': 'op'}
+
+    y = None
+    while True:
+        in_str = yield y
+        if (len(in_str) == 0):  # Empty string, no modification possible
+            y =  in_str
+            continue
+
+        max_try = 10  # Maximum number of tries to find a keyboard modification at
+        # a randomly selected position
+
+        done_key_mod = False  # A flag, set to true once a modification is done
+        try_num = 0
+
+        mod_str = in_str[:]  # Make a copy of the string which will be modified
+
+        while ((done_key_mod == False) and (try_num < max_try)):
+
+            mod_pos = position_function(mod_str)
+            mod_char = mod_str[mod_pos]
+
+            r = random.random()  # Create a random number between 0 and 1
+
+            if (r <= row_prob):  # See if there is a row modification
+                if (mod_char in rows):
+                    key_mod_chars = rows[mod_char]
+                    done_key_mod = True
+
+            else:  # See if there is a column modification
+                if (mod_char in cols):
+                    key_mod_chars = cols[mod_char]
+                    done_key_mod = True
+
+            if (done_key_mod == False):
+                try_num += 1
+
+        if (done_key_mod == True):
+            new_char = random.choice(key_mod_chars)
+            mod_str = mod_str[:mod_pos] + new_char + mod_str[mod_pos+1:]
+
+        assert len(mod_str) == len(in_str)
         y = mod_str

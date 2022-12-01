@@ -22,6 +22,8 @@ def generate_dataset():
     all_upper_case_corruptor = Corruptors.all_upper_case_corruptor()
     ocr_corruptor = Corruptors.ocr_corruptor()
     missing_value_corruptor = Corruptors.missing_value_corruptor()
+    keyboard_corruptor = Corruptors.keyboard_corruptor(0.5,0.5)
+
 
     n = 10
     data = []
@@ -31,7 +33,7 @@ def generate_dataset():
     next(all_upper_case_corruptor)
     next(missing_value_corruptor)
     next(ocr_corruptor)
-
+    next(keyboard_corruptor)
     k = 0
     for i in range(0, n):
         k = k+1
@@ -73,6 +75,18 @@ def generate_dataset():
     df['sub_region'][0] = ocr_corruptor.send(df['sub_region'][0])
     df['phone_number'][0] = ocr_corruptor.send(df['phone_number'][0])
     df['national_id'][0] = ocr_corruptor.send(df['national_id'][0])
+
+    row = 5
+    df['given_name'][row] = keyboard_corruptor.send(df['given_name'][row])
+    df['fathers_name'][row] = keyboard_corruptor.send(df['fathers_name'][row])
+    df['fathers_father_name'][row] = keyboard_corruptor.send(df['fathers_father_name'][row])
+    df['gender'][row] = keyboard_corruptor.send(df['gender'][row])
+    df['dob'][row] = keyboard_corruptor.send(df['dob'][row])
+    df['region'][row] = keyboard_corruptor.send(df['region'][row])
+    df['sub_region'][row] = keyboard_corruptor.send(df['sub_region'][row])
+    df['phone_number'][row] = keyboard_corruptor.send(df['phone_number'][row])
+    df['national_id'][row] = keyboard_corruptor.send(df['national_id'][row])
+
 
     df.to_csv('Results/'+ str(helper.generate_log_filename('synthetic_data_V')), index=False, encoding = 'utf-8')
 
