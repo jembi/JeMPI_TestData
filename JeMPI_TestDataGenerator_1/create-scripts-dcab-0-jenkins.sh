@@ -7,7 +7,7 @@ mkdir -p scripts
 
 for CSV_FILE in test-data/*-dcab.csv.gz; do
   BASE_NAME=$(basename $CSV_FILE .csv.gz)
-  CMND_NAME=`sed 's/data-test/test-01/g' <<<"$BASE_NAME-0"`
+  CMND_NAME=`sed 's/data-test/test-01/g' <<<"$BASE_NAME-0-jenkins"`
   printf "#!/bin/bash
 
 set -e
