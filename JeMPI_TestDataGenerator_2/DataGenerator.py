@@ -10,12 +10,6 @@ from Utilities import helper, basefunctions
 
 
 def generate_dataset():
-    # 'ocr_corruptor'
-    # 'missing_value_corruptor'
-    # 'keyboard_corruptor'
-    # 'edit1_corruptor'
-    # 'edit2_corruptor'
-    # 'phonetic_corruptor'
 
     config = \
         {"BaseDate": "2022-01-01",
