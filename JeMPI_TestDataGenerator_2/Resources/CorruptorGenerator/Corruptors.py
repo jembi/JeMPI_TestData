@@ -489,7 +489,7 @@ def phonetic_corruptor(lookup_file_name, has_header_line, unicode_encoding) -> G
                                 i += 1
                         else:
                             while i < (len(rl)):
-                                if (tmpstr[index:(index + len(rl[i]))] == rl[i]):
+                                if tmpstr[index:(index + len(rl[i]))] == rl[i]:
                                     OKpre = True
                                     break
                                 i += 1
@@ -653,11 +653,10 @@ def phonetic_corruptor(lookup_file_name, has_header_line, unicode_encoding) -> G
 
         return tmpstr
 
-
     replace_table = []
 
-    def dummy_position(s):  # Define a dummy position function
-        return 0
+    # def dummy_position(s):  # Define a dummy position function
+    #     return 0
 
     # Check if the necessary variables have been set
     #
