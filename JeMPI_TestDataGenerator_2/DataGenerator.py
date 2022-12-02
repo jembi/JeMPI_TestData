@@ -12,8 +12,8 @@ from Utilities import helper, basefunctions
 def generate_dataset():
     config = \
         {"BaseDate": "2022-01-01",
-         "NumberOfPatients": 5,
-         "AverageNumberOfClinicalRecordsPerPatient": 3,
+         "NumberOfPatients": 100_000,
+         "AverageNumberOfClinicalRecordsPerPatient": 10,
          "PercentageOfCorruptedRecords": 0.8,
          "fields": [
              {"name": "given_name",
@@ -27,7 +27,7 @@ def generate_dataset():
               "corruptor": {
                   "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
                            "phonetic_corruptor", "ocr_corruptor"],
-                  "weight": [0.2, 0.3, 0.3, 0.0, 0.0, 0.2]}},
+                  "weight": [0.2, 0.3, 0.1, 0.1, 0.1, 0.2]}},
              {"name": "fathers_father_name",
               "weight": 0.1,
               "corruptor": {
@@ -57,7 +57,7 @@ def generate_dataset():
               "corruptor": {
                   "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
                            "phonetic_corruptor", "ocr_corruptor"],
-                  "weight": [0.2, 0.2, 0.3, 0.1, 0.1, 0.1]}},
+                  "weight": [0.3, 0.2, 0.0, 0.0, 0.2, 0.3]}},
              {"name": "phone_number",
               "weight": 0.1,
               "corruptor": {
