@@ -7,7 +7,80 @@ from Utilities import helper
 
 
 def generate_dataset():
-    base_date = '2022-01-01'
+    config = \
+        {"BaseDate": "2022-01-01",
+         "NumberOfPatients": 100_000,
+         "AverageNumberOfClinicalRecordsPerPatient": 10,
+         "PercentageOfCorruptedRecords": 0.8,
+         "fields": [
+             {"name": "given_name",
+              "weight": 0.2,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.2, 0.2, 0.2, 0.1, 0.15, 0.15]}},
+             {"name": "fathers_name",
+              "weight": 0.2,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.2, 0.3, 0.1, 0.1, 0.1, 0.2]}},
+             {"name": "fathers_father_name",
+              "weight": 0.1,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.1, 0.3, 0.3, 0.1, 0.1, 0.1]}},
+             {"name": "gender",
+              "weight": 0.1,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.3, 0.3, 0.3, 0.1, 0.0, 0.0]}},
+             {"name": "dob",
+              "weight": 0.1,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.5, 0.3, 0.0, 0.0, 0.0, 0.2]}},
+             {"name": "region",
+              "weight": 0.05,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.3, 0.3, 0.2, 0.1, 0.0, 0.1]}},
+             {"name": "sub_region",
+              "weight": 0.05,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.3, 0.2, 0.0, 0.0, 0.2, 0.3]}},
+             {"name": "phone_number",
+              "weight": 0.1,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.3, 0.3, 0.2, 0.1, 0.0, 0.1]}},
+             {"name": "national_id",
+              "weight": 0.1,
+              "corruptor": {
+                  "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
+                           "phonetic_corruptor", "ocr_corruptor"],
+                  "weight": [0.3, 0.3, 0.2, 0.1, 0.0, 0.1]}},
+         ]}
+
+    fields = config["fields"]
+    field_name_list = []
+    field_weight_list = []
+    field_corruptor_name_list = {}
+    field_corruptor_weight_list = {}
+    for f_idx in range(len(fields)):
+        field_name_list.append(fields[f_idx]['name'])
+        field_weight_list.append(fields[f_idx]['weight'])
+        field_corruptor_name_list[fields[f_idx]['name']] = fields[f_idx]['corruptor']['type']
+        field_corruptor_weight_list[fields[f_idx]['name']] = fields[f_idx]['corruptor']['weight']
+
+    base_date = config['BaseDate']
     seed = 12345
     gender_generator = PatientGenerator.gender_generator(seed, 0.50)
     male_name_generator = PatientGenerator.name_generator(seed, 'metadata/name-m-freq.csv')

@@ -35,13 +35,13 @@ def generate_dataset():
                            "phonetic_corruptor", "ocr_corruptor"],
                   "weight": [0.3, 0.3, 0.3, 0.1, 0.0, 0.0]}},
              {"name": "dob",
-              "weight": 0.1,
+              "weight": 0.2,
               "corruptor": {
                   "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
                            "phonetic_corruptor", "ocr_corruptor"],
                   "weight": [0.5, 0.3, 0.0, 0.0, 0.0, 0.2]}},
              {"name": "city",
-              "weight": 0.05,
+              "weight": 0.1,
               "corruptor": {
                   "type": ["missing_value_corruptor", "keyboard_corruptor", "edit1_corruptor", "edit2_corruptor",
                            "phonetic_corruptor", "ocr_corruptor"],
