@@ -41,7 +41,7 @@ def name_generator(seed, csv_filename):
         yield idx, freq_table.at[idx, 'name']
 
 
-def town_region_generator(seed, csv_filename):
+def city_generator(seed, csv_filename):
     """
     Random town & region generator
 
@@ -54,7 +54,7 @@ def town_region_generator(seed, csv_filename):
     """
     rng = np.random.default_rng(seed)
     freq_table = pd.read_csv(csv_filename, header=None)
-    freq_table.columns = ['town', 'freq', 'region']
+    freq_table.columns = ['town', 'freq']
     freq_table['prefix'] = freq_table['freq'].cumsum(axis=0)
     high = freq_table.last_valid_index()
     prefix_high = freq_table.at[high, 'prefix']
@@ -62,7 +62,7 @@ def town_region_generator(seed, csv_filename):
         r = rng.integers(0, prefix_high + 1)
         idx = __find_ceil(freq_table, r, 0, high)
         row = freq_table.iloc[idx]
-        yield idx, row['town'], row['region']
+        yield idx, row['town']
 
 
 def date_generator(seed, base, distribution, base_offset_years, spread_months):
@@ -123,15 +123,15 @@ def phone_number_generator(seed, csv_filename) -> Generator[(str, str), str, Non
     """
     rng = np.random.default_rng(seed)
     lookup_table = pd.read_csv(csv_filename, header=None)
-    lookup_table.columns = ['town', 'code']
+    lookup_table.columns = ['city', 'code']
     y = None
     while True:
-        town = yield y
-        code = lookup_table.loc[lookup_table['town'] == town]
+        city = yield y
+        code = lookup_table.loc[lookup_table['city'] == city]
         if code.index.size != 0:
             c = code['code'].iloc[0]
         else:
-            print("Not found: " + town)
+            print("Not found: " + city)
             c = "099 999XXXX"
         phone_number = re.sub('X', lambda x: str(rng.integers(0, 8)), c)
         y = phone_number
