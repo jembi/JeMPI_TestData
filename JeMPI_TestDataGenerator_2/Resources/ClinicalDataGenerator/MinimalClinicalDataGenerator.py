@@ -4,7 +4,7 @@ from dateutil import relativedelta
 from collections.abc import Generator
 
 
-def clinical_data_generator(seed) -> Generator[(str, str, str), (str, str), None]:
+def clinical_data_generator(seed, average_number_of_clinical_records_per_patient) -> Generator[(str, str, str), (str, str), None]:
     """
     Random source id generator
 
@@ -40,18 +40,18 @@ def clinical_data_generator(seed) -> Generator[(str, str, str), (str, str), None
         years = relativedelta.relativedelta(base_datetime, dob_datetime).years
         if years < 15:
             age_clinic = rng.choice(clinic_for_children[0 if gender == 'male' else 1],
-                                    rng.integers(1, 10),
+                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
                                     p=[0.7, 0.3, 0.0, 0.0, 0.0])
         elif years < 25:
             age_clinic = rng.choice(clinic_for_youth[0 if gender == 'male' else 1],
-                                    rng.integers(1, 10),
+                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
                                     p=[0.5, 0.3, 0.2, 0.0, 0.0])
         elif years < 65:
             age_clinic = rng.choice(clinic_for_adults[0 if gender == 'male' else 1],
-                                    rng.integers(1, 10),
+                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
                                     p=[0.2, 0.2, 0.2, 0.2, 0.2])
         else:
             age_clinic = rng.choice(clinic_for_seniors[0 if gender == 'male' else 1],
-                                    rng.integers(1, 10),
+                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
                                     p=[0.7, 0.3, 0.0, 0.0, 0.0])
         y = [item + ':' + p_id for item in list(age_clinic)]
