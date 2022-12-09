@@ -75,7 +75,7 @@ def check_is_string_or_unicode_string(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if ((not isinstance(value, str)) and (not isinstance(value, str))):
+    if (not isinstance(value, str)) and (not isinstance(value, str)):
         raise Exception('Value of "%s" is neither a string nor a Unicode ' %
                         (variable) + 'string: %s (%s)' % (str(value), type(value)))
 
@@ -89,11 +89,11 @@ def check_is_non_empty_string(variable, value):
        value which is checked.
     """
 
-    if ((not isinstance(variable, str)) or (variable == '')):
+    if (not isinstance(variable, str)) or (variable == ''):
         raise Exception('Value of "variable" is not a non-empty string: %s (%s)'
                         % (str(variable), type(variable)))
 
-    if ((not isinstance(value, str)) or (value == '')):
+    if (not isinstance(value, str)) or (value == ''):
         raise Exception('Value of "%s" is not a non-empty string: %s (%s)' %
                         (variable, str(value), type(value)))
 
@@ -346,10 +346,10 @@ def char_set_ascii(s):
 
     check_is_string_or_unicode_string('s', s)
 
-    if (len(s) == 0):
+    if len(s) == 0:
         return ''
 
-    if (' ' in s):
+    if ' ' in s:
         includes_spaces = True
     else:
         includes_spaces = False
@@ -360,7 +360,7 @@ def char_set_ascii(s):
 
     # Check if string contains characters other than alpha-numeric characters
     #
-    if check_str.isalnum() == False:
+    if not check_str.isalnum():
         return ''
 
         # Return an empty string rather than stopping program
@@ -370,14 +370,14 @@ def char_set_ascii(s):
 
     # Check if string contains letters only, digits only, or both
     #
-    if (check_str.isdigit() == True):
+    if check_str.isdigit():
         char_set = '0123456789'
-    elif (check_str.isalpha() == True):
+    elif check_str.isalpha():
         char_set = 'abcdefghijklmnopqrstuvwxyz'
     else:
         char_set = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
-    if (includes_spaces == True):
+    if includes_spaces:
         char_set += ' '
 
     return char_set
@@ -400,8 +400,7 @@ def check_is_valid_format_str(variable, value):
 
     if (value not in ['int', 'float1', 'float2', 'float3', 'float4', 'float5',
                       'float6', 'float7', 'float8', 'float9']):
-        raise Exception('%s is not a validformat string: %s' %
-                        (str(variable), type(value)))
+        raise Exception('%s is not a validformat string: %s' % (str(variable), type(value)))
 
 # -----------------------------------------------------------------------------
 

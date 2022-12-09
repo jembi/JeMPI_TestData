@@ -12,7 +12,7 @@ from Utilities import helper, basefunctions
 def generate_dataset():
     config = \
         {"BaseDate": "2022-01-01",
-         "NumberOfPatients": 1_000,
+         "NumberOfPatients": 100_000,
          "AverageNumberOfClinicalRecordsPerPatient": 10,
          "PercentageOfCorruptedRecords": 0.8,
          "fields": [
@@ -117,10 +117,10 @@ def generate_dataset():
             print(k)
         gender = next(gender_generator)
         given_name = next(female_name_generator)[1] if gender == 'female' else next(male_name_generator)[1]
-        family_name = next(family_name_generator)
+        family_name = next(family_name_generator)[1]
         dob = next(dob_generator)
         dob = np.datetime_as_string(dob, unit='D')
-        city = next(city_generator)
+        city = next(city_generator)[1]
         phone_number = phone_number_generator.send(city[1])
         national_id = national_id_generator.send((dob, gender))
         clinical_data = clinical_data_generator.send((gender, base_date, dob, national_id))
@@ -128,10 +128,10 @@ def generate_dataset():
         for j in range(0, len(clinical_data)):
             rec_num = "rec-%010d-%02d" % (i + 1, j)
             data.append([rec_num, given_name, family_name, gender, dob, city,
-                         phone_number, clinical_data[j]])
+                         phone_number, national_id, clinical_data[j]])
 
     df = pd.DataFrame(data, columns=['rec_num', 'given_name', 'family_name', 'gender', 'dob',
-                                     'city', 'phone_number', 'clinical_data'])
+                                     'city', 'phone_number', 'national_id', 'clinical_data'])
     df['corrupted'] = False
     number_of_records = df.shape[0]
     percentage_of_corrupted_records = config['PercentageOfCorruptedRecords']

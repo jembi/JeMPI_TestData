@@ -113,7 +113,7 @@ def keyboard_corruptor(row_prob, col_prob, position_function) -> Generator[None]
     basefunctions.check_is_normalised('row_prob', row_prob)
     basefunctions.check_is_normalised('col_prob', col_prob)
 
-    if (abs((row_prob + col_prob) - 1.0) > 0.0000001):
+    if abs((row_prob + col_prob) - 1.0) > 0.0000001:
         raise Exception('Sum of row and column probablities does not sum to 1.0')
 
     rows = {'a': 's', 'b': 'vn', 'c': 'xv', 'd': 'sf', 'e': 'wr', 'f': 'dg',
