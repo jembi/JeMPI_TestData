@@ -121,7 +121,7 @@ def generate_dataset():
         dob = next(dob_generator)
         dob = np.datetime_as_string(dob, unit='D')
         city = next(city_generator)[1]
-        phone_number = phone_number_generator.send(city[1])
+        phone_number = phone_number_generator.send(city)
         national_id = national_id_generator.send((dob, gender))
         clinical_data = clinical_data_generator.send((gender, base_date, dob, national_id))
 
