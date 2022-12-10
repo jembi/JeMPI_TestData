@@ -1,57 +1,65 @@
-import numpy as np
-from datetime import datetime
-from dateutil import relativedelta
+import base64
+import hashlib
 from collections.abc import Generator
 
+import numpy as np
+from Crypto.Cipher import AES
 
-def clinical_data_generator(seed, average_number_of_clinical_records_per_patient) -> Generator[(str, str, str), (str, str), None]:
+
+def get_private_key(password):
+    return hashlib.sha256(password.encode()).digest()
+
+
+def clinical_data_generator(seed, average_number_of_clinical_records_per_patient) -> Generator[
+    (str, str, str), (str, str), None]:
     """
     Random source id generator
 
     Args:
         seed: random national_id generator's seed.
+        average_number_of_clinical_records_per_patient:
 
     Returns:
         yields a source id tuple
-    """
-    # 00-14 years
-    clinic_for_children = [['MC1', 'MC2', 'MC3', 'MC4', 'MC5'],
-                          ['FC1', 'FC2', 'FC3', 'FC4', 'FC5']]
-    # 15-24 years
-    clinic_for_youth = [['MY1', 'MY2', 'MY3', 'MY4', 'MY5'],
-                        ['FY1', 'FY2', 'FY3', 'FY4', 'FY5']]
-    # 25-64 years
-    clinic_for_adults = [['MA1', 'MA2', 'MA3', 'MA4', 'MA5'],
-                         ['FA1', 'FA2', 'FA3', 'FA4', 'FA5']]
-    # 65 years and over
-    clinic_for_seniors = [['MS1', 'MS2', 'MS3', 'MS4', 'MS5'],
-                          ['FS1', 'FS2', 'FS3', 'FS4', 'FS5']]
-    rng = np.random.default_rng(seed)
-    y = None
-    while True:
-        meta = yield y
-        gender = meta[0]
-        base_date = meta[1]
-        dob = meta[2]
-        p_id = meta[3]
 
-        base_datetime = datetime.strptime(base_date, '%Y-%m-%d')
-        dob_datetime = datetime.strptime(dob, '%Y-%m-%d')
-        years = relativedelta.relativedelta(base_datetime, dob_datetime).years
-        if years < 15:
-            age_clinic = rng.choice(clinic_for_children[0 if gender == 'male' else 1],
-                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
-                                    p=[0.7, 0.3, 0.0, 0.0, 0.0])
-        elif years < 25:
-            age_clinic = rng.choice(clinic_for_youth[0 if gender == 'male' else 1],
-                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
-                                    p=[0.5, 0.3, 0.2, 0.0, 0.0])
-        elif years < 65:
-            age_clinic = rng.choice(clinic_for_adults[0 if gender == 'male' else 1],
-                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
-                                    p=[0.2, 0.2, 0.2, 0.2, 0.2])
-        else:
-            age_clinic = rng.choice(clinic_for_seniors[0 if gender == 'male' else 1],
-                                    rng.integers(1, average_number_of_clinical_records_per_patient * 2),
-                                    p=[0.7, 0.3, 0.0, 0.0, 0.0])
-        y = [item + ':' + p_id for item in list(age_clinic)]
+    """
+    emr_list = ['EMR1', 'EMR2', 'EMR3', 'EMR4', 'EMR5']
+    rng = np.random.default_rng(seed)
+    key_dict = {'EMR1': get_private_key('EMR1'),
+                'EMR2': get_private_key('EMR2'),
+                'EMR3': get_private_key('EMR3'),
+                'EMR4': get_private_key('EMR4'),
+                'EMR5': get_private_key('EMR5')}
+
+    def encrypt(clear_text, emr):
+        cipher = AES.new(key_dict.get(emr), AES.MODE_GCM, emr.encode('utf-8'))
+        cipher_text = cipher.encrypt(bytes(clear_text, 'utf-8'))
+        # print(cipher_text.hex())
+        return base64.b64encode(cipher_text).decode('ascii')
+
+    def decrypt(cipher_text, emr):
+        enc = base64.b64decode(cipher_text)
+        cipher = AES.new(key_dict.get(emr), AES.MODE_GCM, emr.encode('utf-8'))
+        return cipher.decrypt(enc)
+
+    def encode_finger_print(emr, finger_print):
+        encoded_finger_print = encrypt(str(int(finger_print)), emr)
+        # print(str(int(finger_print)) +
+        #       " -> " + encoded_finger_print +
+        #       " -> " + str(decrypt(encoded_finger_print, emr)))
+        return encoded_finger_print
+
+    def get_clinical_fields(emr, p_id, fp_id):
+        return [emr, p_id, encode_finger_print(emr, fp_id)]
+
+    y = []
+    while True:
+        yield y
+        _dummy_patient_id = rng.integers(100_000_000, 999_999_999)
+        _dummy_finger_print = rng.integers(1_000_000_000, 9_999_999_999)
+        emr_visits = rng.choice(emr_list,
+                                rng.integers(1, average_number_of_clinical_records_per_patient * 2),
+                                p=[0.2, 0.2, 0.2, 0.2, 0.2])
+        y = [get_clinical_fields(emr,
+                                 hashlib.sha1((emr + str(_dummy_patient_id)).encode('utf-8')).hexdigest(),
+                                 _dummy_finger_print) for emr in emr_visits]
