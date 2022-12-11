@@ -10,29 +10,31 @@ def get_private_key(password):
     return hashlib.sha256(password.encode()).digest()
 
 
-def encrypt(clear_text, key, emr):
-    cipher = AES.new(key, AES.MODE_GCM, emr.encode('utf-8'))
+def encrypt(clear_text, key):
+    cipher = AES.new(key=key, mode=AES.MODE_ECB)
     cipher_text = cipher.encrypt(bytes(clear_text, 'utf-8'))
-    # print(cipher_text.hex())
+    print("clear  : " + clear_text)
+    print("key    : " + key.hex())
+    print("cipher : " + cipher_text.hex())
     return base64.b64encode(cipher_text).decode('ascii')
 
 
-def decrypt(cipher_text, key, emr):
+def decrypt(cipher_text, key):
     enc = base64.b64decode(cipher_text)
-    cipher = AES.new(key, AES.MODE_GCM, emr.encode('utf-8'))
+    cipher = AES.new(key=key, mode=AES.MODE_ECB)
     return cipher.decrypt(enc)
 
 
-def encode_finger_print(key, emr, finger_print):
-    encoded_finger_print = encrypt(str(int(finger_print)), key, emr)
-    # print(str(int(finger_print)) +
-    #       " -> " + encoded_finger_print +
-    #       " -> " + str(decrypt(encoded_finger_print, key, emr)))
+def encode_finger_print(key, finger_print):
+    encoded_finger_print = encrypt(str(int(finger_print)), key)
+    print(str(int(finger_print)) +
+          " -> " + encoded_finger_print +
+          " -> " + str(decrypt(encoded_finger_print, key)))
     return encoded_finger_print
 
 
 def get_clinical_fields(key, emr, p_id, fp_id):
-    return [emr, p_id, encode_finger_print(key, emr, fp_id)]
+    return [emr, p_id, encode_finger_print(key, fp_id)]
 
 
 def clinical_data_generator(seed, average_number_of_clinical_records_per_patient) -> Generator[
@@ -60,7 +62,7 @@ def clinical_data_generator(seed, average_number_of_clinical_records_per_patient
     while True:
         yield y
         _dummy_patient_id = rng.integers(100_000_000, 999_999_999)
-        _dummy_finger_print = rng.integers(1_000_000_000, 9_999_999_999)
+        _dummy_finger_print = rng.integers(1_000_000_000_000_000, 9_999_999_999_999_999)
         emr_visits = rng.choice(emr_list,
                                 rng.integers(1, average_number_of_clinical_records_per_patient * 2),
                                 p=[0.2, 0.2, 0.2, 0.2, 0.2])

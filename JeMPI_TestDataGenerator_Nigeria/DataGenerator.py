@@ -12,8 +12,8 @@ from Utilities import helper, basefunctions
 def generate_dataset():
     config = \
         {"BaseDate": "2022-01-01",
-         "NumberOfPatients": 100_000,
-         "AverageNumberOfClinicalRecordsPerPatient": 10,
+         "NumberOfPatients": 1_000,
+         "AverageNumberOfClinicalRecordsPerPatient": 5,
          "PercentageOfCorruptedRecords": 0.8,
          "fields": [
              {"name": "given_name",
