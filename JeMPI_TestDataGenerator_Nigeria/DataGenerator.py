@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 import pandas as pd
 
@@ -13,7 +11,7 @@ def generate_dataset():
     config = \
         {"BaseDate": "2022-01-01",
          "NumberOfPatients": 1_000,
-         "AverageNumberOfClinicalRecordsPerPatient": 5,
+         "AverageNumberOfClinicalRecordsPerPatient": 10,
          "PercentageOfCorruptedRecords": 0.8,
          "fields": [
              {"name": "given_name",
@@ -134,36 +132,28 @@ def generate_dataset():
 
     df = pd.DataFrame(data, columns=['rec_num', 'given_name', 'family_name', 'gender', 'dob',
                                      'city', 'phone_number', 'national_id', 'emr', 'p_id', 'f_id'])
-    df['corrupted'] = False
     number_of_records = df.shape[0]
     percentage_of_corrupted_records = config['PercentageOfCorruptedRecords']
     number_of_corrupted_records = int(number_of_records * percentage_of_corrupted_records)
-    for i in range(0, number_of_corrupted_records):
-        print("corrupting %d of %d" % (i + 1, number_of_corrupted_records))
-        candidate_not_corrupted = False
-        row_to_corrupt = None
-        while not candidate_not_corrupted:
-            row_to_corrupt = rng.integers(0, number_of_records)
-            already_corrupted = df.loc[row_to_corrupt]['corrupted']
-            if not already_corrupted:
-                df.at[row_to_corrupt, 'corrupted'] = True
-                candidate_not_corrupted = True
-
+    rows_to_corrupt = rng.choice(a=number_of_records,
+                                 size=number_of_corrupted_records,
+                                 replace=False)
+    i = 0
+    for row_to_corrupt in rows_to_corrupt:
+        i = i + 1
+        if i % 100 == 0:
+            print("corrupting row %d of %d --- row %d" % (i, number_of_corrupted_records, row_to_corrupt))
         columns_to_corrupt = rng.choice(a=field_name_list,
                                         p=field_weight_list,
                                         size=rng.integers(1, len(field_weight_list) + 1),
                                         replace=False)
-        # print('row to corrupt: %s' % row_to_corrupt)
         for column_to_corrupt in columns_to_corrupt:
             corruptor_names = field_corruptor_name_list[column_to_corrupt]
             corruptor_weights = field_corruptor_weight_list[column_to_corrupt]
             corruptor = rng.choice(a=corruptor_names, p=corruptor_weights, size=1, replace=False)[0]
-            # print('col to corrupt: %s, %s' % (column_to_corrupt, corruptor))
             value_to_corrupt = df.at[row_to_corrupt, column_to_corrupt]
             corruptor_value = corruptor_dict[corruptor].send(value_to_corrupt)
             df.at[row_to_corrupt, column_to_corrupt] = corruptor_value
-        # print()
-    df = df.drop('corrupted', axis=1)
 
     df.to_csv('Results/' + str(helper.generate_log_filename('synthetic_data_V')), index=False, encoding='utf-8')
 

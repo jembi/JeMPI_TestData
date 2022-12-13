@@ -13,9 +13,9 @@ def get_private_key(password):
 def encrypt(clear_text, key):
     cipher = AES.new(key=key, mode=AES.MODE_ECB)
     cipher_text = cipher.encrypt(bytes(clear_text, 'utf-8'))
-    print("clear  : " + clear_text)
-    print("key    : " + key.hex())
-    print("cipher : " + cipher_text.hex())
+    # print("clear  : " + clear_text)
+    # print("key    : " + key.hex())
+    # print("cipher : " + cipher_text.hex())
     return base64.b64encode(cipher_text).decode('ascii')
 
 
@@ -27,9 +27,9 @@ def decrypt(cipher_text, key):
 
 def encode_finger_print(key, finger_print):
     encoded_finger_print = encrypt(str(int(finger_print)), key)
-    print(str(int(finger_print)) +
-          " -> " + encoded_finger_print +
-          " -> " + str(decrypt(encoded_finger_print, key)))
+    # print(str(int(finger_print)) +
+    #       " -> " + encoded_finger_print +
+    #       " -> " + str(decrypt(encoded_finger_print, key)))
     return encoded_finger_print
 
 
