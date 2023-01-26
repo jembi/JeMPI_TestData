@@ -3,7 +3,7 @@
 set -e
 set -u
 
-FILE=synthetic_data_V000
+FILE=synthetic_data_full_V000
 DST_DIR=../../JeMPI/docker/docker_data/data-apps/async_receiver/csv
 
 sed 1,1d ./Results/$FILE.csv | shuf >$DST_DIR/$FILE.temp
