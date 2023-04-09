@@ -28,7 +28,7 @@ def check_is_not_none(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (value == None):
+    if value is None:
         raise Exception('Value of "%s" is None' % (variable))
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,7 +43,7 @@ def check_is_string(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, str)):
+    if not isinstance(value, str):
         raise Exception('Value of "%s" is not a string: %s (%s)' %
                         (variable, str(value), type(value)))
 
@@ -59,7 +59,7 @@ def check_is_unicode_string(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, str)):
+    if not isinstance(value, str):
         raise Exception('Value of "%s" is not a Unicode string: %s (%s)' %
                         (variable, str(value), type(value)))
 
@@ -75,7 +75,7 @@ def check_is_string_or_unicode_string(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if ((not isinstance(value, str)) and (not isinstance(value, str))):
+    if (not isinstance(value, str)) and (not isinstance(value, str)):
         raise Exception('Value of "%s" is neither a string nor a Unicode ' %
                         (variable) + 'string: %s (%s)' % (str(value), type(value)))
 
@@ -89,11 +89,11 @@ def check_is_non_empty_string(variable, value):
        value which is checked.
     """
 
-    if ((not isinstance(variable, str)) or (variable == '')):
+    if (not isinstance(variable, str)) or (variable == ''):
         raise Exception('Value of "variable" is not a non-empty string: %s (%s)'
                         % (str(variable), type(variable)))
 
-    if ((not isinstance(value, str)) or (value == '')):
+    if (not isinstance(value, str)) or (value == ''):
         raise Exception('Value of "%s" is not a non-empty string: %s (%s)' %
                         (variable, str(value), type(value)))
 
@@ -200,7 +200,7 @@ def check_is_integer(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, int)):
+    if not isinstance(value, int):
         raise Exception('Value of "%s" is not an integer: %s (%s)' %
                         (variable, str(value), type(value)))
 
@@ -216,7 +216,7 @@ def check_is_float(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, float)):
+    if not isinstance(value, float):
         raise Exception('Value of "%s" is not a floating point ' % (variable) +
                         'number: %s (%s)' % (str(value), type(value)))
 
@@ -232,7 +232,7 @@ def check_is_dictionary(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, dict)):
+    if not isinstance(value, dict):
         raise Exception('Value of "%s" is not a dictionary: %s' %
                         (variable, type(value)))
 
@@ -248,7 +248,7 @@ def check_is_list(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, list)):
+    if not isinstance(value, list):
         raise Exception('Value of "%s" is not a list: %s' %
                         (variable, type(value)))
 
@@ -264,7 +264,7 @@ def check_is_set(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, set)):
+    if not isinstance(value, set):
         raise Exception('Value of "%s" is not a set: %s' %
                         (variable, type(value)))
 
@@ -280,7 +280,7 @@ def check_is_tuple(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (not isinstance(value, tuple)):
+    if not isinstance(value, tuple):
         raise Exception('Value of "%s" is not a tuple: %s' %
                         (variable, type(value)))
 
@@ -296,7 +296,7 @@ def check_is_flag(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (value not in [True, False]):
+    if value not in [True, False]:
         raise Exception('Value of "%s" is not True or False: %s' % (variable, str(value)))
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -311,7 +311,7 @@ def check_is_function_or_method(variable, value):
 
     check_is_non_empty_string('variable', variable)
 
-    if (type(value) not in [types.FunctionType, types.MethodType]):
+    if type(value) not in [types.FunctionType, types.MethodType]:
         raise Exception('%s is not a function or method: %s' %
                         (str(variable), type(value)))
 
@@ -346,10 +346,10 @@ def char_set_ascii(s):
 
     check_is_string_or_unicode_string('s', s)
 
-    if (len(s) == 0):
+    if len(s) == 0:
         return ''
 
-    if (' ' in s):
+    if ' ' in s:
         includes_spaces = True
     else:
         includes_spaces = False
@@ -360,7 +360,7 @@ def char_set_ascii(s):
 
     # Check if string contains characters other than alpha-numeric characters
     #
-    if check_str.isalnum() == False:
+    if not check_str.isalnum():
         return ''
 
         # Return an empty string rather than stopping program
@@ -370,14 +370,14 @@ def char_set_ascii(s):
 
     # Check if string contains letters only, digits only, or both
     #
-    if (check_str.isdigit() == True):
+    if check_str.isdigit():
         char_set = '0123456789'
-    elif (check_str.isalpha() == True):
+    elif check_str.isalpha():
         char_set = 'abcdefghijklmnopqrstuvwxyz'
     else:
         char_set = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
-    if (includes_spaces == True):
+    if includes_spaces:
         char_set += ' '
 
     return char_set
@@ -420,26 +420,26 @@ def float_to_str(f, format_str):
     check_is_string('format_str', format_str)
     check_is_valid_format_str('format_str', format_str)
 
-    if (format_str == 'int'):
-        f_str = '%.0f' % (f)
-    elif (format_str == 'float1'):
-        f_str = '%.1f' % (f)
-    elif (format_str == 'float2'):
-        f_str = '%.2f' % (f)
-    elif (format_str == 'float3'):
-        f_str = '%.3f' % (f)
-    elif (format_str == 'float4'):
-        f_str = '%.4f' % (f)
-    elif (format_str == 'float5'):
-        f_str = '%.5f' % (f)
-    elif (format_str == 'float6'):
-        f_str = '%.6f' % (f)
-    elif (format_str == 'float7'):
-        f_str = '%.7f' % (f)
-    elif (format_str == 'float8'):
-        f_str = '%.8f' % (f)
-    elif (format_str == 'float9'):
-        f_str = '%.9f' % (f)
+    if format_str == 'int':
+        f_str = '%.0f' % f
+    elif format_str == 'float1':
+        f_str = '%.1f' % f
+    elif format_str == 'float2':
+        f_str = '%.2f' % f
+    elif format_str == 'float3':
+        f_str = '%.3f' % f
+    elif format_str == 'float4':
+        f_str = '%.4f' % f
+    elif format_str == 'float5':
+        f_str = '%.5f' % f
+    elif format_str == 'float6':
+        f_str = '%.6f' % f
+    elif format_str == 'float7':
+        f_str = '%.7f' % f
+    elif format_str == 'float8':
+        f_str = '%.8f' % f
+    elif format_str == 'float9':
+        f_str = '%.9f' % f
     else:
         raise Exception('Illegal string format given: "%s"' % (format_str))
 
@@ -505,7 +505,7 @@ def read_csv_file(file_name, encoding, header_line):
     check_is_string('file_name', file_name)
     check_is_flag('header_line', header_line)
 
-    if (encoding == None):  # Use default ASCII encoding
+    if encoding is None:  # Use default ASCII encoding
         encoding = 'ascii'
     check_is_string('encoding', encoding)
     check_unicode_encoding_exists(encoding)
@@ -515,7 +515,7 @@ def read_csv_file(file_name, encoding, header_line):
     except:
         raise IOError('Cannot read CSV file "%s"' % (file_name))
 
-    if (header_line == True):
+    if header_line:
         header_line = in_file.readline()
         # print 'Header line:', header_line
 
@@ -529,7 +529,7 @@ def read_csv_file(file_name, encoding, header_line):
 
     for line_str in in_file:
         line_str = line_str.strip()
-        if ((line_str.startswith('#') == False) and (line_str != '')):
+        if (line_str.startswith('#') is False) and (line_str != ''):
             line_list = str2comma_separated_list(line_str)
 
             file_data.append(line_list)
@@ -567,7 +567,7 @@ def write_csv_file(file_name, encoding, header_list, file_data):
     check_is_string('file_name', file_name)
     check_is_list('file_data', file_data)
 
-    if (encoding == None):  # Use default ASCII encoding
+    if encoding is None:  # Use default ASCII encoding
         encoding = 'ascii'
     check_is_string('encoding', encoding)
     check_unicode_encoding_exists(encoding)
@@ -577,7 +577,7 @@ def write_csv_file(file_name, encoding, header_list, file_data):
     except:
         raise IOError('Cannot write CSV file "%s"' % (file_name))
 
-    if (header_list != None):
+    if header_list is not None:
         check_is_list('header_list', header_list)
         header_str = ','.join(header_list)
         # print 'Header line:', header_str

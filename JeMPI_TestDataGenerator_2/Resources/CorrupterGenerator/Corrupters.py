@@ -33,7 +33,7 @@ def position_mod_normal(in_str):
     return pos
 
 
-def all_upper_case_corruptor() -> Generator[None]:
+def all_upper_case_corrupter() -> Generator[None]:
     y = None
     while True:
         meta = yield y
@@ -41,12 +41,12 @@ def all_upper_case_corruptor() -> Generator[None]:
         y = value.upper()
 
 
-def missing_value_corruptor() -> Generator[None]:
+def missing_value_corrupter() -> Generator[None]:
     while True:
         yield None
 
 
-def ocr_corruptor(lookup_file_name, has_header_line, unicode_encoding, position_function) -> Generator[None]:
+def ocr_corrupter(lookup_file_name, has_header_line, unicode_encoding, position_function) -> Generator[None]:
     ocr_val_dict = {}  # The dictionary to hold the OCR variations
     header_list, lookup_file_data = basefunctions.read_csv_file(lookup_file_name, unicode_encoding, has_header_line)
     for rec_list in lookup_file_data:
@@ -109,7 +109,7 @@ def ocr_corruptor(lookup_file_name, has_header_line, unicode_encoding, position_
         y = mod_str
 
 
-def keyboard_corruptor(row_prob, col_prob, position_function) -> Generator[None]:
+def keyboard_corrupter(row_prob, col_prob, position_function) -> Generator[None]:
     basefunctions.check_is_normalised('row_prob', row_prob)
     basefunctions.check_is_normalised('col_prob', col_prob)
 
@@ -177,7 +177,7 @@ def keyboard_corruptor(row_prob, col_prob, position_function) -> Generator[None]
         y = mod_str
 
 
-def edit_corruptor(position_function,
+def edit_corrupter(position_function,
                    char_set_funct,
                    insert_prob,
                    delete_prob,
@@ -212,7 +212,8 @@ def edit_corruptor(position_function,
     while True:
         in_str = yield y
         if len(in_str) == 0:  # Empty string, no modification possible
-            return in_str
+            y = in_str
+            continue
 
         # Randomly select an edit operation
         #
@@ -268,7 +269,8 @@ def edit_corruptor(position_function,
         char_set = char_set_funct(in_str)
 
         if char_set == '':  # No possible value change
-            return in_str
+            y = in_str
+            continue
 
         if edit_op == 'ins':  # Insert a character
             ins_char = random.choice(char_set)
@@ -289,7 +291,7 @@ def edit_corruptor(position_function,
         y = new_str
 
 
-def phonetic_corruptor(lookup_file_name, has_header_line, unicode_encoding) -> Generator[None]:
+def phonetic_corrupter(lookup_file_name, has_header_line, unicode_encoding) -> Generator[None]:
 
     def slavo_germanic(in_str):
         """Helper function which determines if the inputstring could contain a
