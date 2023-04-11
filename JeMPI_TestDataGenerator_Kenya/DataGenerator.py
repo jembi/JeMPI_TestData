@@ -17,7 +17,7 @@ config = \
           "corrupter": {
               "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
                        "phonetic_corrupter", "ocr_corrupter"],
-              "weight": [0.0, 0.0, 0.0, 0.0, 1.0, 0.00]}},
+              "weight": [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]}},
          {"name": "family_name",
           "weight": 0.2,
           "corrupter": {
