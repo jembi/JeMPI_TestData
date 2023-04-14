@@ -151,7 +151,7 @@ def generate_dataset():
     df = pd.DataFrame(data,
                       columns=['rec_num', 'phonetic_given_name', 'phonetic_family_name', 'gender', 'dob', 'nupi',
                                'clinical_data'])
-    # df = corrupt_data(df)
+    df = corrupt_data(df)
     csv_file_name = 'Results/' + str(helper.generate_log_filename('synthetic_data_kenya_V'))
     df.to_csv(csv_file_name, index=False, encoding='utf-8')
 
