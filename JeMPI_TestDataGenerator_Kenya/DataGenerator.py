@@ -10,16 +10,16 @@ config = \
     {"BaseDate": "2022-01-01",
      "NumberOfPatients": 1_000,
      "AverageNumberOfClinicalRecordsPerPatient": 5,
-     "PercentageOfCorruptedRecords": 0.8,
+     "PercentageOfCorruptedRecords": 0.1,
      "fields": [
-         {"name": "given_name",
-          "weight": 0.2,
+         {"name": "phonetic_given_name",
+          "weight": 0.0,
           "corrupter": {
               "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
                        "phonetic_corrupter", "ocr_corrupter"],
               "weight": [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]}},
-         {"name": "family_name",
-          "weight": 0.2,
+         {"name": "phonetic_family_name",
+          "weight": 0.0,
           "corrupter": {
               "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
                        "phonetic_corrupter", "ocr_corrupter"],
@@ -36,12 +36,12 @@ config = \
               "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
                        "phonetic_corrupter", "ocr_corrupter"],
               "weight": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]}},
-         {"name": "national_id",
-          "weight": 0.6,
+         {"name": "nupi",
+          "weight": 1.0,
           "corrupter": {
               "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
                        "phonetic_corrupter", "ocr_corrupter"],
-              "weight": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]}},
+              "weight": [0.6, 0.0, 0.1, 0.1, 0.0, 0.2]}},
      ]}
 
 seed = 123456
@@ -49,11 +49,11 @@ rng = np.random.default_rng(seed)
 base_date = config['BaseDate']
 number_of_patients = config.get("NumberOfPatients")
 gender_generator = PatientGenerator.gender_generator(seed, 0.50)
-male_name_generator = PatientGenerator.name_generator(seed, 'metadata/name-m-freq.csv')
-female_name_generator = PatientGenerator.name_generator(seed, 'metadata/name-f-freq.csv')
-family_name_generator = PatientGenerator.name_generator(seed, 'metadata/family-name-freq.csv')
+phonetic_male_name_generator = PatientGenerator.name_generator(seed, 'metadata/name-m-freq.csv')
+phonetic_female_name_generator = PatientGenerator.name_generator(seed, 'metadata/name-f-freq.csv')
+phonetic_family_name_generator = PatientGenerator.name_generator(seed, 'metadata/family-name-freq.csv')
 dob_generator = PatientGenerator.date_generator(seed, base_date, 'gumbel', 35, 12 * 10)
-national_id_generator = PatientGenerator.national_id_generator(seed)
+nupi_generator = PatientGenerator.national_id_generator(seed)
 clinical_data_generator = MinimalClinicalDataGenerator.clinical_data_generator(
     seed,
     config['AverageNumberOfClinicalRecordsPerPatient'])
@@ -69,7 +69,7 @@ corrupter_dict = {'ocr_corrupter': Corrupters.ocr_corrupter('metadata/ocr-variat
                                                                0.25, 0.25, 0.25, 0.25),
                   'phonetic_corrupter': Corrupters.phonetic_corrupter('metadata/phonetic-variations.csv',
                                                                       False, 'utf_8')}
-next(national_id_generator)
+next(nupi_generator)
 next(clinical_data_generator)
 next(corrupter_dict['missing_value_corrupter'])
 next(corrupter_dict['ocr_corrupter'])
@@ -89,18 +89,18 @@ def generate_patients():
     k = 0
     for i in range(0, number_of_patients):
         k = k + 1
-        if k % 1000 == 0:
+        if k % 5000 == 0:
             print(k)
         gender = next(gender_generator)
-        given_name = next(female_name_generator)[1] if gender == 'female' else next(male_name_generator)[1]
-        family_name = next(family_name_generator)[1]
+        phonetic_given_name = next(phonetic_female_name_generator)[1] if gender == 'female' else next(phonetic_male_name_generator)[1]
+        phonetic_family_name = next(phonetic_family_name_generator)[1]
         dob = next(dob_generator)
         dob = np.datetime_as_string(dob, unit='D')
-        national_id = national_id_generator.send((dob, gender))
-        clinical_data = clinical_data_generator.send((gender, base_date, dob, national_id))
+        nupi = nupi_generator.send((dob, gender))
+        clinical_data = clinical_data_generator.send((gender, base_date, dob, nupi))
         for j in range(0, len(clinical_data)):
             rec_num = "rec-%010d-%02d" % (i + 1, j)
-            data.append([rec_num, given_name, family_name, gender, dob, national_id, clinical_data[j]])
+            data.append([rec_num, phonetic_given_name, phonetic_family_name, gender, dob, nupi, clinical_data[j]])
     return data
 
 
@@ -109,7 +109,11 @@ def corrupt_data(df):
     number_of_records = df.shape[0]
     percentage_of_corrupted_records = config['PercentageOfCorruptedRecords']
     number_of_corrupted_records = int(number_of_records * percentage_of_corrupted_records)
+    k = 0
     for _ in range(0, number_of_corrupted_records):
+        k = k + 1
+        if k % 1000 == 0:
+            print(k)
         candidate_not_corrupted = False
         row_to_corrupt = None
         while not candidate_not_corrupted:
@@ -118,10 +122,11 @@ def corrupt_data(df):
             if not already_corrupted:
                 df.at[row_to_corrupt, 'corrupted'] = True
                 candidate_not_corrupted = True
-        columns_to_corrupt = rng.choice(a=field_name_list,
-                                        p=field_weight_list,
-                                        size=rng.integers(1, 4),  # len(field_weight_list) + 1),
-                                        replace=False)
+        # columns_to_corrupt = rng.choice(a=field_name_list,
+        #                                 p=field_weight_list,
+        #                                 size=rng.integers(1, len(field_weight_list) + 1),
+        #                                 replace=False)
+        columns_to_corrupt = ['nupi']
         # print('row to corrupt: %s' % row_to_corrupt)
         for column_to_corrupt in columns_to_corrupt:
             corrupter_names = field_corrupter_name_set[column_to_corrupt]
@@ -144,8 +149,9 @@ def generate_dataset():
         field_corrupter_weight_set[fields[f_idx]['name']] = fields[f_idx]['corrupter']['weight']
     data = generate_patients()
     df = pd.DataFrame(data,
-                      columns=['rec_num', 'given_name', 'family_name', 'gender', 'dob', 'national_id', 'clinical_data'])
-    df = corrupt_data(df)
+                      columns=['rec_num', 'phonetic_given_name', 'phonetic_family_name', 'gender', 'dob', 'nupi',
+                               'clinical_data'])
+    # df = corrupt_data(df)
     csv_file_name = 'Results/' + str(helper.generate_log_filename('synthetic_data_kenya_V'))
     df.to_csv(csv_file_name, index=False, encoding='utf-8')
 
