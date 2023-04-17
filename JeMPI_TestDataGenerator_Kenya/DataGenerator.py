@@ -6,7 +6,7 @@ from Resources.CorrupterGenerator import Corrupters
 from Resources.DemographicDataGenerator import PatientGenerator
 from Utilities import helper, basefunctions
 
-config = \
+config_corrupt_nupi = \
     {"BaseDate": "2022-01-01",
      "NumberOfPatients": 1_000,
      "AverageNumberOfClinicalRecordsPerPatient": 5,
@@ -43,6 +43,46 @@ config = \
                        "phonetic_corrupter", "ocr_corrupter"],
               "weight": [0.6, 0.0, 0.1, 0.1, 0.0, 0.2]}},
      ]}
+
+config_corrupt_nupi_pkv = \
+    {"BaseDate": "2022-01-01",
+     "NumberOfPatients": 1_000,
+     "AverageNumberOfClinicalRecordsPerPatient": 5,
+     "PercentageOfCorruptedRecords": 0.1,
+     "fields": [
+         {"name": "phonetic_given_name",
+          "weight": 0.15,
+          "corrupter": {
+              "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
+                       "phonetic_corrupter", "ocr_corrupter"],
+              "weight": [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]}},
+         {"name": "phonetic_family_name",
+          "weight": 0.15,
+          "corrupter": {
+              "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
+                       "phonetic_corrupter", "ocr_corrupter"],
+              "weight": [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]}},
+         {"name": "gender",
+          "weight": 0.05,
+          "corrupter": {
+              "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
+                       "phonetic_corrupter", "ocr_corrupter"],
+              "weight": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]}},
+         {"name": "dob",
+          "weight": 0.05,
+          "corrupter": {
+              "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
+                       "phonetic_corrupter", "ocr_corrupter"],
+              "weight": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]}},
+         {"name": "nupi",
+          "weight": 0.6,
+          "corrupter": {
+              "type": ["missing_value_corrupter", "keyboard_corrupter", "edit1_corrupter", "edit2_corrupter",
+                       "phonetic_corrupter", "ocr_corrupter"],
+              "weight": [0.6, 0.0, 0.1, 0.1, 0.0, 0.2]}},
+     ]}
+
+config = config_corrupt_nupi_pkv
 
 seed = 123456
 rng = np.random.default_rng(seed)
@@ -122,11 +162,11 @@ def corrupt_data(df):
             if not already_corrupted:
                 df.at[row_to_corrupt, 'corrupted'] = True
                 candidate_not_corrupted = True
-        # columns_to_corrupt = rng.choice(a=field_name_list,
-        #                                 p=field_weight_list,
-        #                                 size=rng.integers(1, len(field_weight_list) + 1),
-        #                                 replace=False)
-        columns_to_corrupt = ['nupi']
+        columns_to_corrupt = rng.choice(a=field_name_list,
+                                        p=field_weight_list,
+                                        size=rng.integers(1, len(field_weight_list) + 1),
+                                        replace=False)
+        # columns_to_corrupt = ['nupi']
         # print('row to corrupt: %s' % row_to_corrupt)
         for column_to_corrupt in columns_to_corrupt:
             corrupter_names = field_corrupter_name_set[column_to_corrupt]
